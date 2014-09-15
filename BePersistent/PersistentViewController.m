@@ -10,6 +10,7 @@
 
 static NSString * const playerKey = @"player";
 static NSString * const scoreKey = @"score";
+static NSString * const playerNameKey = @"playerName";
 
 @interface PersistentViewController () <UITextFieldDelegate>
 
@@ -38,6 +39,12 @@ static NSString * const scoreKey = @"score";
         self.scoreLabel.text = [score stringValue];
         self.stepper.value = [score doubleValue];
     }
+    
+    NSString *name = dictionary[playerNameKey];
+    
+    if (name) {
+        self.textField.text = name;
+    }
 }
 
 - (IBAction)changeScore:(id)sender {
@@ -50,6 +57,9 @@ static NSString * const scoreKey = @"score";
     
     NSMutableDictionary *player = [NSMutableDictionary new];
     [player setObject:@(self.stepper.value) forKey:scoreKey];
+    if (self.textField.text) {
+        [player setObject:self.textField.text forKey:playerNameKey];
+    }
     
     [[NSUserDefaults standardUserDefaults] setObject:player forKey:playerKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
