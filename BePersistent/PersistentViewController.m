@@ -8,6 +8,7 @@
 
 #import "PersistentViewController.h"
 
+static NSString * const playerKey = @"player";
 static NSString * const scoreKey = @"score";
 
 @interface PersistentViewController () <UITextFieldDelegate>
@@ -25,13 +26,18 @@ static NSString * const scoreKey = @"score";
 
     self.textField.delegate = self;
 
-    NSNumber *score = [[NSUserDefaults standardUserDefaults] objectForKey:scoreKey];
+    NSDictionary *player = [[NSUserDefaults standardUserDefaults] objectForKey:playerKey];
+    [self updateWithDictionary:player];
+}
+
+- (void)updateWithDictionary:(NSDictionary *)dictionary {
+
+    NSNumber *score = dictionary[scoreKey];
     
     if (score) {
         self.scoreLabel.text = [score stringValue];
         self.stepper.value = [score doubleValue];
     }
-    
 }
 
 - (IBAction)changeScore:(id)sender {
@@ -41,7 +47,11 @@ static NSString * const scoreKey = @"score";
 }
 
 - (IBAction)save:(id)sender {
-    [[NSUserDefaults standardUserDefaults] setObject:@(self.stepper.value) forKey:scoreKey];
+    
+    NSMutableDictionary *player = [NSMutableDictionary new];
+    [player setObject:@(self.stepper.value) forKey:scoreKey];
+    
+    [[NSUserDefaults standardUserDefaults] setObject:player forKey:playerKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
