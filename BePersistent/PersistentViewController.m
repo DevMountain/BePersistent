@@ -8,6 +8,8 @@
 
 #import "PersistentViewController.h"
 
+static NSString * const scoreKey = @"score";
+
 @interface PersistentViewController () <UITextFieldDelegate>
 
 @property (nonatomic, strong) IBOutlet UITextField *textField;
@@ -23,6 +25,13 @@
 
     self.textField.delegate = self;
 
+    NSNumber *score = [[NSUserDefaults standardUserDefaults] objectForKey:scoreKey];
+    
+    if (score) {
+        self.scoreLabel.text = [score stringValue];
+        self.stepper.value = [score doubleValue];
+    }
+    
 }
 
 - (IBAction)changeScore:(id)sender {
@@ -32,7 +41,8 @@
 }
 
 - (IBAction)save:(id)sender {
-
+    [[NSUserDefaults standardUserDefaults] setObject:@(self.stepper.value) forKey:scoreKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
